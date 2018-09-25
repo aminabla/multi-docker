@@ -1,0 +1,27 @@
+sudo: required
+services:
+  - docker
+
+
+before_install:
+  - docker build -t aminabla/react-test -f ./client/Dockerfile.dev ./client
+
+
+script:
+  - docker run aminabla/react-test npm test -- --coverage
+
+
+after_success:
+  - docker build -t aminabla/multi-client ./client
+  - docker build -t aminabla/multi-nginx ./nginx
+  - docker build -t aminabla/multi-server ./server
+  - docker build -t aminabla/multi-worker ./worker
+
+#log in to the docker cli
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+# take the images and upload to docker hub
+- docker push aminabla/multi-client
+- docker push aminabla/multi-nginx
+- docker push aminabla/multi-server
+- docker push aminabla/multi-worker
