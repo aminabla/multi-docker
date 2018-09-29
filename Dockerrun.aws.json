@@ -1,0 +1,36 @@
+{
+    "AWSEBDockerrunVersion":2,
+    "containerDefinitions":[
+        {
+            "name": "client",
+            "image": "aminabla/multi-client",
+            "hostname": "client",
+            "essential": true
+        },
+        {
+            "name": "server",
+            "image": "aminabla/multi-server",
+            "hostname": "api",
+            "essential": true
+        },
+        {
+            "name": "worker",
+            "image": "aminabla/multi-worker",
+            "hostname": "worker",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "aminabla/multi-nginx",
+            "essential": true,
+            "portMappings":[
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": ["client","server"] 
+        }
+
+    ]
+}
